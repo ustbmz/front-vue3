@@ -12,6 +12,7 @@
     "@vee-validate/i18n": "^4.4.7",
     "@vee-validate/rules": "^4.4.7",
     "core-js": "^3.6.5",
+    "dayjs": "^1.10.7",
     "uuid": "^8.3.2",
     "vee-validate": "^4.4.11",
     "vue": "^3.0.0",

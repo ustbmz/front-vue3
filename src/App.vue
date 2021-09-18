@@ -4,7 +4,7 @@
   <home-footer></home-footer>
 </template>
 
-<script lang="ts">
+<script>
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
 import { defineComponent } from 'vue'
@@ -13,6 +13,10 @@ export default defineComponent({
   components: {
     'home-header': Header,
     'home-footer': Footer
+  },
+  mounted () {
+    console.log('app mounted')
+    window.vue = this
   }
 })
 </script>

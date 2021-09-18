@@ -1,13 +1,20 @@
 <template>
-  <div class="home">
-    <router-view />
+  <div class="layui-container">
+    <home-panel></home-panel>
+    <router-view></router-view>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script>
+import Panle from '@/components/Panle.vue'
+import { defineComponent } from '@vue/runtime-core'
 
 export default defineComponent({
-  name: 'Home'
+  name: 'home',
+  components: {
+    'home-panel': Panle
+  }
 })
 </script>
+
+<style lang="scss" scoped></style>

@@ -124,6 +124,7 @@ import { defineComponent, onMounted } from 'vue'
 import { Field, Form } from 'vee-validate'
 import { loginUtils } from '@/utils/login'
 import { HttpResponse, LoginInfo } from '@/common/interface'
+import { alert, confirm } from '@/components/modules/alert'
 import router from '@/router'
 
 export default defineComponent({
@@ -143,9 +144,13 @@ export default defineComponent({
       const { setErrors, resetForm } = form
       if (code === 200) {
         resetForm()
-        setTimeout(() => {
-          router.push({ name: 'home' })
-        }, 1000)
+        alert('登录成功')
+        confirm('登录成功', () => {
+          console.log('fuck')
+        })
+        // setTimeout(() => {
+        //   router.push({ name: 'home' })
+        // }, 1000)
       } else {
         if (typeof msg === 'object') {
           setErrors({
