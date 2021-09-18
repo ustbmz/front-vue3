@@ -26,10 +26,10 @@
             ></a>
           </li>
           <li class="layui-nav-item">
-            <a :to="{ name: 'login' }"><a>登入</a></a>
+            <router-link :to="{ name: 'login' }"><a>登入</a></router-link>
           </li>
           <li class="layui-nav-item">
-            <a :to="{ name: 'reg' }"><a>注册</a></a>
+            <router-link :to="{ name: 'reg' }"><a>注册</a></router-link>
           </li>
           <li class="layui-nav-item layui-hide-xs">
             <a

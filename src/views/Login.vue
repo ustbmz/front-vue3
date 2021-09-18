@@ -5,7 +5,7 @@
         <ul class="layui-tab-title">
           <li class="layui-this">登入</li>
           <li>
-            <a :to="{ name: 'reg' }">注册</a>
+            <router-link :to="{ name: 'reg' }">注册</router-link>
           </li>
         </ul>
         <div
@@ -15,7 +15,7 @@
         >
           <div class="layui-tab-item layui-show">
             <div class="layui-form layui-form-pane">
-              <Form method="post">
+              <Form @submit="submit" v-slot="{ errors }">
                 <div class="layui-form-item">
                   <label for="L_email" class="layui-form-label">用户名</label>
                   <div class="layui-input-inline">
@@ -31,7 +31,7 @@
                   </div>
                   <div class="layui-form-mid">
                     <span style="color:#c00">
-                      <ErrorMessage name="username" />
+                      {{ errors.username }}
                     </span>
                   </div>
                 </div>
@@ -50,7 +50,7 @@
                   </div>
                   <div class="layui-form-mid">
                     <span style="color:#c00">
-                      <ErrorMessage name="password" />
+                      {{ errors.password }}
                     </span>
                   </div>
                 </div>
@@ -67,7 +67,7 @@
                         placeholder="请输入验证码"
                         autocomplete="off"
                         class="layui-input"
-                        rules="required|length:4"
+                        rules="required"
                       />
                     </div>
                     <div class>
@@ -80,13 +80,13 @@
                     </div>
                     <div class="layui-form-mid">
                       <span style="color:#c00">
-                        <ErrorMessage name="code" />
+                        {{ errors.code }}
                       </span>
                     </div>
                   </div>
                 </div>
                 <div class="layui-form-item">
-                  <button class="layui-btn" type="button" @click="submit()">
+                  <button class="layui-btn" type="submit">
                     立即登录
                   </button>
                   <span style="padding-left: 20px">
@@ -120,62 +120,49 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive } from 'vue'
-import { Field, Form, ErrorMessage } from 'vee-validate'
-import { v4 as uuidv4 } from 'uuid'
-import store from '@/store'
-import { getCode } from '@/api/login'
-import { HttpResponse } from '@/common/interface'
+import { defineComponent, onMounted } from 'vue'
+import { Field, Form } from 'vee-validate'
+import { loginUtils } from '@/utils/login'
+import { HttpResponse, LoginInfo } from '@/common/interface'
+import router from '@/router'
+
 export default defineComponent({
   components: {
     Field,
-    Form,
-    ErrorMessage
+    Form
   },
   setup () {
-    const state = reactive({
-      username: '',
-      password: '',
-      code: '',
-      svg: ''
-    })
-
-    const getCaptcha = async () => {
-      let sid = ''
-      if (localStorage.getItem('sid')) {
-        sid = localStorage.getItem('sid') || ''
-      } else {
-        sid = uuidv4()
-        localStorage.setItem('sid', sid)
-      }
-      store.commit('setSid', sid)
-      const { data, code } = (await getCode(sid)) as HttpResponse
-      if (code === 200) {
-        state.svg = data
-      }
-    }
-
-    const submit = () => {
-      console.log('submit')
-    }
-
+    const { state, getCaptcha, loginHandle } = loginUtils()
     onMounted(async () => {
       getCaptcha()
     })
 
+    const submit = async (value: LoginInfo, form: any) => {
+      const ret = await loginHandle()
+      const { code, msg } = ret as HttpResponse
+      const { setErrors, resetForm } = form
+      if (code === 200) {
+        resetForm()
+        setTimeout(() => {
+          router.push({ name: 'home' })
+        }, 1000)
+      } else {
+        if (typeof msg === 'object') {
+          setErrors({
+            ...msg
+          })
+        } else {
+          setErrors({
+            code: msg
+          })
+        }
+      }
+    }
+
     return {
       state,
-      submit,
-      getCaptcha
-    }
-  },
-  methods: {
-    isRequired (value: any) {
-      if (value && value.trim()) {
-        return true
-      }
-
-      return 'This is required'
+      getCaptcha,
+      submit
     }
   }
 })

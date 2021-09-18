@@ -1,5 +1,7 @@
 import { UserInfo } from '@/common/interface'
-import { createStore } from 'vuex'
+import { createLogger, createStore } from 'vuex'
+
+const debug = process.env.NODE_ENV === 'production'
 export default createStore({
   state: {
     sid: '',
@@ -46,5 +48,6 @@ export default createStore({
       commit('setMessage', msg)
     }
   },
-  modules: {}
+  modules: {},
+  plugins: !debug ? [createLogger()] : []
 })

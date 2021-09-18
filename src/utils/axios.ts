@@ -101,7 +101,7 @@ class HttpRequest {
     url: string,
     data?: any,
     config?: AxiosRequestConfig
-  ): Promise<AxiosResponse> {
+  ): Promise<AxiosResponse> | Promise<HttpResponse> {
     const options = Object.assign(
       {
         method: 'post',
