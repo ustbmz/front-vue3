@@ -122,18 +122,17 @@
 <script lang="ts">
 import { defineComponent, onMounted } from 'vue'
 import { Field, Form } from 'vee-validate'
-import { loginUtils } from '@/utils/login'
+import { loginService } from '@/common/provides/login'
 import { HttpResponse, LoginInfo } from '@/common/interface'
-import { alert, confirm } from '@/components/modules/alert'
 import router from '@/router'
-
+import { popup } from '../components/modules/pop/index'
 export default defineComponent({
   components: {
     Field,
     Form
   },
   setup () {
-    const { state, getCaptcha, loginHandle } = loginUtils()
+    const { state, getCaptcha, loginHandle } = loginService()
     onMounted(async () => {
       getCaptcha()
     })
@@ -144,13 +143,10 @@ export default defineComponent({
       const { setErrors, resetForm } = form
       if (code === 200) {
         resetForm()
-        alert('登录成功')
-        confirm('登录成功', () => {
-          console.log('fuck')
-        })
-        // setTimeout(() => {
-        //   router.push({ name: 'home' })
-        // }, 1000)
+        popup('登录成功')
+        setTimeout(() => {
+          router.push({ name: 'home' })
+        }, 1000)
       } else {
         if (typeof msg === 'object') {
           setErrors({

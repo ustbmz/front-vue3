@@ -1,7 +1,10 @@
 <template>
-  <div class="model" v-show="isShow">
+  <div class="model" v-show="state.isShow">
     <div class="mask" @click="close()"></div>
-    <div class="layui-layer layui-layer-page info" :class="{ active: isShow }">
+    <div
+      class="layui-layer layui-layer-page info"
+      :class="{ active: state.isShow }"
+    >
       <div class="layui-layui-title pl2 pr2">
         签到说明
         <i class="customfont icon-close pull-right" @click="close()"></i>
@@ -55,53 +58,31 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "sign-info",
+<script lang="ts">
+import { computed, defineComponent } from '@vue/runtime-core'
+import { reactive } from '@vue/runtime-dom'
+
+export default defineComponent({
+  name: 'sign-info',
   props: {
-    isShow:{
-      type:Boolean,
-      default:false
+    isShow: {
+      type: Boolean,
+      default: false
     }
   },
-  data () {
+  setup (props, { emit }) {
+    const state = reactive({
+      isShow: computed(() => props.isShow)
+    })
+    const close = () => {
+      emit('update:isShow', false)
+    }
     return {
-      lists: [
-        {
-          name: "测试用户1",
-          created:'2020-12-21',
-          count: 4,
-        },
-        {
-          name: "测试用户2",
-          created:'2020-12-21',
-          count: 3,
-        },
-        {
-          name: "测试用户3",
-          created:'2020-12-21',
-          count: 77,
-        },
-        {
-          name: "测试用户4",
-          created:'2020-12-21',
-          count: 66,
-        },
-        {
-          name: "测试用户5",
-          created:'2020-12-21',
-          count: 88,
-        },
-      ],
-    }
-  },
-  methods: {
-    close () {
-      this.$emit('update:isShow', false)
+      close,
+      state
     }
   }
-};
+})
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

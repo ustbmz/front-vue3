@@ -1,5 +1,4 @@
 import { App, createApp } from 'vue'
-import AlertComponent from './Alert.vue'
 
 export const alert = (msg: string) => {
   const root = document.createElement('div')
@@ -17,7 +16,7 @@ export const alert = (msg: string) => {
         document.body.removeChild(root)
       }
       const newOptions = Object.assign(options, { unmount })
-      return () => (<AlertComponent {...newOptions} />)
+      return () => (<alertComponent {...newOptions} />)
     }
   })
 
@@ -42,7 +41,7 @@ export const confirm = (msg: string, success:any, cencel?:any) => {
         document.body.removeChild(root)
       }
       const newOptions = Object.assign(options, { unmount })
-      return () => (<AlertComponent {...newOptions} />)
+      return () => (<alertComponent {...newOptions} />)
     }
   })
 

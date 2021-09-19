@@ -7,6 +7,9 @@ export interface UserInfo {
   pic?: string
   gender?: string
   remark?: string
+  count?: number
+  lastSign?: string
+  isSign?: boolean
 }
 
 export interface LoginInfo {

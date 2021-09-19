@@ -11,65 +11,38 @@
         去签到
       </a>
     </div>
-    <list-item :lists="lists" :isShow="false" :isEnd="isEnd"></list-item>
+    <list-item
+      :lists="state.lists"
+      :isShow="state.isShow"
+      :isEnd="state.isEnd"
+    ></list-item>
   </div>
 </template>
 
 <script>
-import ListItem from "./Listitem.vue";
-import { getList } from "@/api/content";
+import ListItem from './Listitem.vue'
+import { listService } from '../../common/provides/list'
+import { defineComponent, onMounted } from 'vue'
 
-export default {
-  name: "topList",
+export default defineComponent({
+  name: 'topList',
   components: {
-    ListItem,
+    ListItem
   },
-  data() {
+  setup () {
+    const { state, handleGetlist } = listService()
+    state.isTop = 1
+
+    onMounted(() => {
+      console.log('TopList vue onMounted')
+      handleGetlist()
+    })
+
     return {
-      catalog: "",
-      isEnd:true,
-      status: "",
-      tag: "",
-      sort: "",
-      page: 0,
-      limit: 20,
-      lists: [],
-    };
-  },
-  mounted(){
-    this._getList()
-  },
-  methods: {
-    _getList() {
-      let options = {
-        catalog: this.catalog,
-        isTop: 1,
-        page: this.page,
-        limit: this.limit,
-        sort: this.sort,
-        tag: this.tag,
-        status: this.status,
-      };
-      getList(options)
-        .then((res) => {
-          if (res.code === 200) {
-            if (res.data.length < 20) {
-              this.isEnd = true;
-            }
-            if (this.lists.length == 0) {
-              this.lists = res.data;
-            } else {
-              this.lists = this.lists.concat(res.data);
-            }
-          }
-        })
-        .catch((err) => {
-          this.$alert(err.message);
-        });
-    },
-  },
-};
+      state
+    }
+  }
+})
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

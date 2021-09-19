@@ -21,14 +21,14 @@
         活跃榜
         <span class="layui-badge-dot"></span>
       </a>
-      <span class="fly-signin-days" v-show="isSign || isLogin">
+      <span class="fly-signin-days" v-show="state.isSign || state.isLogin">
         已连续签到
-        <cite>{{ count }}</cite>
+        <cite>{{ state.count }}</cite>
         天
       </span>
     </div>
     <div class="fly-panel-main fly-signin-main">
-      <template v-if="!isSign">
+      <template v-if="!state.isSign">
         <button
           class="layui-btn layui-btn-danger"
           id="LAY_signin"
@@ -38,145 +38,116 @@
         </button>
         <span>
           可获得
-          <cite>{{ favs }}</cite>
+          <cite>{{ state.fav }}</cite>
           飞吻
         </span>
       </template>
       <template v-else>
         <!-- 已签到状态 -->
-        <button class="layui-btn layui-btn-disabled">{{ nextSignTime }}</button>
+        <button class="layui-btn layui-btn-disabled">
+          {{ state.nextSignTime }}
+        </button>
         <span>
           获得了
-          <cite>{{ favs }}</cite>
+          <cite>{{ state.getFav }}</cite>
           飞吻
         </span>
       </template>
     </div>
     <!-- 父组件 sync用法  -->
     <!-- 字组件不需要提交关闭事件让父组件取改变isShow的状态  -->
-    <sign-info :isShow.sync="showDes"></sign-info>
-    <sign-list :isShow.sync="showTop"></sign-list>
+    <sign-info v-model:isShow="state.showDes"></sign-info>
+    <sign-list v-model:isShow="state.showTop"></sign-list>
   </div>
 </template>
 
-<script>
-import SignInfo from "./signContent/signInfo.vue";
-import SignList from "./signContent/SignList.vue";
-import { userSign } from "@/api/user";
-import moment from "dayjs";
-var isSameOrBefore = require("dayjs/plugin/isSameOrBefore");
-moment.extend(isSameOrBefore);
-export default {
-  name: "sign",
+<script lang="ts">
+import SignInfo from './signContent/signInfo.vue'
+import SignList from './signContent/SignList.vue'
+import { userSign } from '@/api/user'
+import { defineComponent } from '@vue/runtime-core'
+import store from '@/store'
+import { computed, reactive } from 'vue'
+import { popup } from '@/components/modules/pop'
+import { HttpResponse } from '@/common/interface'
+
+export default defineComponent({
+  name: 'sign',
   components: {
     SignInfo,
-    SignList,
+    SignList
   },
-  data() {
-    return {
+  setup () {
+    const state = reactive({
       showDes: false,
       showTop: false,
       isSign: false,
-      resetTime: "",
-      nextSignTime: "今日已签到",
+      resetTime: '',
+      nextSignTime: '今日已签到',
       leftSeconds: 0,
-      count: this.$store.state.userInfo.count
-        ? this.$store.state.userInfo.count
-        : 0,
-    };
-  },
-  mounted() {
-    const userInfo = this.$store.state.userInfo;
-    console.log(moment(userInfo.lastSign).format("YYYY-MM-DD"));
-    console.log(moment().format("YYYY-MM-DD"));
-    if (userInfo.length > 0) {
-      this.isSign = moment(userInfo.lastSign).isSameOrBefore(moment());
-    }
-    // const endTime = moment().format("YYYY-MM-DD 23:59:59");
-    // var now = new Date();
-    // var until = new Date(endTime);
-    // this.leftSeconds = (until - now) ;
-    // console.log('🚀 ~ file: Sign.vue ~ line 99 ~ mounted ~ leftSeconds', this.leftSeconds)
-    // this.getCode(this.leftSeconds)
-  },
-  watch: {
-    leftSeconds(newval, oldval) {
-      if (this.isSign) {
-        console.log(
-          "🚀 ~ file: Sign.vue ~ line 109 ~ leftSeconds ~ oldval",
-          oldval
-        );
-        this.nextSignTime = moment(newval).format("HH:mm:ss");
-      }
-    },
-  },
-  computed: {
-    isLogin() {
-      return this.$store.state.isLogin ? this.$store.state.isLogin : false;
-    },
-    favs() {
-      let fav = 0;
-      let count = parseInt(this.count);
+      count: computed(() =>
+        store.state.userInfo.count ? store.state.userInfo.count : 0
+      ),
+      isLogin: computed(() => store.state.isLogin),
+      user: computed(() => store.state.userInfo),
+      getFav: 0
+    })
 
-      if (this.$store.state.userinfo !== {}) {
-        if (count <= 5) {
-          fav = 5;
-        } else if (count > 5 && count <= 15) {
-          fav = 10;
-        } else if (count > 15 && count <= 30) {
-          fav = 15;
-        } else if (count > 30 && count <= 100) {
-          fav = 20;
-        } else if (count > 100 && count <= 365) {
-          fav = 50;
-        }
-        return fav;
-      } else {
-        return fav;
+    const fav = () => {
+      let fav = 0
+      if (state.count <= 5) {
+        fav = 5
+      } else if (state.count > 5 && state.count <= 15) {
+        fav = 10
+      } else if (state.count > 15 && state.count <= 30) {
+        fav = 15
+      } else if (state.count > 30 && state.count <= 100) {
+        fav = 20
+      } else if (state.count > 100 && state.count <= 365) {
+        fav = 50
       }
-    },
-  },
-  methods: {
-    getCode(val) {
-      console.log("getCode");
-      this.timer = setInterval(() => {
-        this.leftSeconds--;
-        if (val === 0) {
-          this.isSign = false;
-          clearInterval(this.timer);
-        }
-      }, 1000);
-    },
-    showInfo(val) {
+      return fav
+    }
+
+    const showInfo = (val: boolean) => {
       if (val) {
-        this.showTop = true;
+        state.showTop = true
       } else {
-        this.showDes = true;
+        state.showDes = true
       }
-    },
-    sign() {
-      let userInfo = this.$store.state.userInfo;
-      if (!this.isLogin) {
-        this.$pop("shake", "请先登陆");
-        return;
+    }
+
+    const sign = async () => {
+      const userInfo = store.state.userInfo
+      if (!state.isLogin) {
+        popup('请先登陆')
+        return
       }
-      userSign().then((res) => {
-        if (res.code === 200) {
-          this.fav = res.favs;
-          this.count = res.count;
-          this.$pop("", "签到成功");
-          this.isSign = true;
-        } else {
-          this.isSign = false;
-          this.$pop("", "用户已签到");
-        }
-        userInfo.isSign = true;
-        userInfo.lastSign = res.lastSign;
-        this.$store.commit("setUserInfo", userInfo);
-      });
-    },
-  },
-};
+      const res = await userSign()
+      const { code, data } = res as HttpResponse
+
+      if (code === 200) {
+        state.getFav = data.favs
+        state.count = data.count
+        popup('签到成功')
+        state.isSign = true
+      } else {
+        state.isSign = false
+        popup('用户已签到')
+      }
+      // userInfo.isSign = true
+      userInfo.lastSign = data.lastSign
+      store.commit('setUserInfo', userInfo)
+    }
+
+    return {
+      state,
+      sign,
+      showInfo,
+      fav
+    }
+  }
+})
 </script>
 
 <style lang="scss">

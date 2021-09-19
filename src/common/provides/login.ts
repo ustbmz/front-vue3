@@ -4,7 +4,7 @@ import store from '@/store'
 import { reactive } from '@vue/runtime-dom'
 import { v4 as uuidv4 } from 'uuid'
 
-export const loginUtils = () => {
+export const loginService = () => {
   let sid = ''
 
   const state = reactive({

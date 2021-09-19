@@ -173,7 +173,7 @@
 <script lang="ts">
 import { defineComponent, onMounted } from 'vue'
 import { Field, Form } from 'vee-validate'
-import { loginUtils } from '@/utils/login'
+import { loginService } from '@/common/provides/login'
 import { HttpResponse, RegInfo } from '@/common/interface'
 import router from '@/router'
 
@@ -185,7 +185,7 @@ export default defineComponent({
   },
 
   setup () {
-    const { state, getCaptcha, regHandle } = loginUtils()
+    const { state, getCaptcha, regHandle } = loginService()
 
     onMounted(async () => {
       getCaptcha()
