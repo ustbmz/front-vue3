@@ -3,61 +3,67 @@
     <div class="alert">
       <div class="flex">{{ state.msg }}</div>
       <div v-if="state.type === 'alert'">
-        <div class="btnCommon success" @click="close()">确认</div>
+        <div class="btnCommon success"
+             @click="close()">确定</div>
       </div>
-      <div v-else class="space-round">
-        <div class="btnCommon cancel" @click="cancelEvent()">取消</div>
-        <div class="btnCommon success" @click="successEvent()">确认</div>
+      <div v-else
+           class="space-round">
+        <div class="btnCommon cancel"
+             @click="cancelEvent()">取消</div>
+        <div class="btnCommon success"
+             @click="successEvent()">确定</div>
       </div>
     </div>
-    <div class="mask" @click="close()"></div>
+    <div class="mask"
+         @click="close()"></div>
   </div>
 </template>
 
-<script>
-import { computed, reactive } from '@vue/reactivity'
-import ToggleUtils from '../../../utils/toggle'
-export default {
+<script lang="ts">
+import toggleUtils from '@/utils/toggle'
+import { computed, defineComponent, reactive } from 'vue'
+/* eslint-disable */
+export default defineComponent({
   props: {
     type: {
       type: String,
-      default: 'alter'
+      default: 'alert'
     },
     msg: {
       type: String,
-      default: 'alter text telling content'
+      default: ''
     },
     success: {
       type: Function,
       default: () => {
-        console.log('click success')
+        console.log('点击了success')
       }
     },
     cancel: {
       type: Function,
       default: () => {
-        console.log('click cancel')
+        console.log('点击了cancel')
       }
     },
     unmount: {
       type: Function,
       default: () => {
-        console.log('unmount')
+        console.log('unMount 根节点');
       }
     }
   },
-  setup (props) {
-    const { on, toggle } = ToggleUtils(true, 0)
+  setup (props:any) {
+    const { toggle, on } = toggleUtils(true, 0)
     const state = reactive({
-      on,
       toggle,
+      on,
       msg: computed(() => props.msg),
       type: computed(() => props.type)
     })
 
     const close = () => {
-      toggle(false)
-      // 删除dom节点
+      state.toggle(false)
+      // 删除对应的DOM根节点
       props.unmount()
     }
 
@@ -65,30 +71,66 @@ export default {
       props.cancel && props.cancel()
       close()
     }
+
     const successEvent = () => {
       props.success && props.success()
       close()
     }
 
     return {
-      cancelEvent,
-      successEvent,
+      state,
       close,
-      state
+      successEvent,
+      cancelEvent
     }
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>
 $btn-main: #009688;
-$btn-dark: darken($btn-main, 10%);
+$btn-dark: darken($btn-main, 5%);
+
+.alert {
+  width: 300px;
+  height: 150px;
+  position: fixed;
+  background: #fff;
+  border-radius: 6px;
+  left: 50%;
+  top: 50%;
+  margin-left: -150px;
+  margin-top: -75px;
+  padding: 20px 10px;
+  box-shadow: 0 5px 8px rgba(0, 0, 0, 0.05);
+  z-index: 3000;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex {
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.space-round {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  padding: 0 10px;
+}
 
 .btnCommon {
   width: 105px;
   height: 32px;
-  line-height: 32px;
   text-align: center;
+  line-height: 32px;
   border-radius: 6px;
   &.success {
     background: $btn-main;
@@ -102,45 +144,7 @@ $btn-dark: darken($btn-main, 10%);
     color: #333;
   }
 }
-.space-round {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-around;
-  align-items: center;
-  padding: 0px 10px;
-  width: 100%;
-}
 
-.alert {
-  width: 300px;
-  height: 150px;
-  position: fixed;
-  background: #fff;
-  border-radius: 8px;
-  left: 50%;
-  top: 50%;
-  margin-left: -150px;
-  margin-top: -75px;
-  padding: 20px 10px;
-  box-shadow: 0 5px 8px rgba(0, 0, 0, 0.05);
-  z-index: 3000;
-  // 使用flex布局
-  display: flex;
-  // 布局方向  竖向排列 不换行
-  flex-flow: column nowrap;
-  // 垂直轴向 排布方式
-  justify-content: center;
-  // 交叉轴 排布方式
-  align-items: center;
-}
-
-.flex {
-  flex: 1;
-  // 使文字纵向居中
-  justify-content: center;
-  align-items: center;
-  display: flex;
-}
 .mask {
   position: fixed;
   width: 100%;

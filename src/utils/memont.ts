@@ -8,3 +8,11 @@ export const moment = (date: Date) => {
     .locale('zh-cn')
     .fromNow()
 }
+
+export const isBefore = (date: Date) => {
+  return dayjs().isBefore(date)
+}
+
+export const strToDate = (date: number) => {
+  return dayjs(date)
+}
