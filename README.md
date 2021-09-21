@@ -1,10 +1,11 @@
 # Front BBS 重构项目
-## 使用vue3 + ts + standard + vee-validate 4.x新特性重构BBS全栈实践项目
+## 使用vue3 + ts + standard + vee-validate 4.x 进行重构
 
 
 后续集成markdown编辑器及预览，替换现有自定义编辑器
 
-预览地址: http://121.36.201.245:11001
+预览地址: http://121.36.201.245:11001  `持续改造ing...`
+对标vue2版本：http://121.36.201.245:11006  `All functions are complete`
 ## Project setup
 ```
 yarn install
