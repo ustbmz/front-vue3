@@ -1,7 +1,7 @@
 <template>
   <div class="fly-panel fly-signin">
     <div class="fly-panel-title">
-      签到
+      签到1
       <i class="fly-mid"></i>
       <a
         href="javascript:void(0);"
