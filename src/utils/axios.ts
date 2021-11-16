@@ -37,7 +37,7 @@ class HttpRequest {
     instance.interceptors.request.use(
       config => {
         const token = store.state.token
-        if (token) {
+        if (token && config.headers) {
           config.headers.Authorization = 'Bearer ' + token
         }
         // Do something before request is sent
