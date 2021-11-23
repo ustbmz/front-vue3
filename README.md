@@ -4,7 +4,9 @@
 
 后续集成 markdown 编辑器及预览，替换现有自定义编辑器
 
-预览地址: https://v3bbs.ustbmz.com`持续改造ing...`
+预览地址: https://v3bbs.ustbmz.com
+
+`持续改造ing...`
 
 对标 vue2 版本：https://bbs.ustbmz.com `All functions are complete`
 
