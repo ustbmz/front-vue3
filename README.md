@@ -4,7 +4,7 @@
 
 后续集成 markdown 编辑器及预览，替换现有自定义编辑器
 
-预览地址: https://v3bbs.ustbmz.com
+预览地址: https://v3bbs.ustbmz.com （域名到期，暂无法访问）
 
 `持续改造ing...`
 
