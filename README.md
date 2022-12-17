@@ -9,3 +9,5 @@
 `持续改造ing...`
 
 对标 vue2 版本：https://bbs.ustbmz.com `All functions are complete`
+
+fartboy
